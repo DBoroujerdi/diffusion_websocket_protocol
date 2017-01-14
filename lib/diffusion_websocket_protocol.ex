@@ -50,7 +50,7 @@ defmodule Diffusion.Websocket.Protocol do
       [data] ->
         %DataMessage{type: type, data: split(data), headers: []}
       [headers, data] ->
-        %DataMessage{type: type, data: String.split(data, "\u{02}"), headers: String.split(headers, "\u{02}")}
+        %DataMessage{type: type, data: split(data), headers: split(headers)}
     end
   end
 
