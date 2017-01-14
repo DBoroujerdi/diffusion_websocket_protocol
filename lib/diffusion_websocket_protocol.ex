@@ -79,6 +79,10 @@ defmodule Diffusion.Websocket.Protocol do
 
   @spec encode(DataMessage.t) :: String.t
 
+  def encode(%ConnectionResponse{type: type, client_id: id, version: version}) do
+    Integer.to_string(version) <> "\u{02}" <> Integer.to_string(type) <> "\u{02}" <> id
+  end
+
   def encode(%DataMessage{type: type, data: data, headers: headers}) do
     :binary.encode_unsigned(type) <> Enum.join(headers, "\u{02}") <> "\u{01}" <> Enum.join(data, "\u{02}")
   end

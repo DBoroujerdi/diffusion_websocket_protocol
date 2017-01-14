@@ -8,13 +8,13 @@ defmodule Diffusion.Websocket.ProtocolTest do
 
   test "can decode connection response" do
     expected = %ConnectionResponse{type: 100, client_id: "C8D4048FA5712A3A-006740E900000004", version: 4}
-    actual = Protocol.decode(<<"4\u{2}100\u{2}C8D4048FA5712A3A-006740E900000004">>)
+    actual = Protocol.decode(<<"4\u{02}100\u{02}C8D4048FA5712A3A-006740E900000004">>)
     assert expected == actual
   end
 
   test "returns error when version is not an integer" do
     expected = {:error, :decode_failure}
-    actual = Protocol.decode(<<"d\u{2}100\u{2}C8D4048FA5712A3A-006740E900000004">>)
+    actual = Protocol.decode(<<"d\u{02}100\u{02}C8D4048FA5712A3A-006740E900000004">>)
     assert expected == actual
   end
 
@@ -43,10 +43,17 @@ defmodule Diffusion.Websocket.ProtocolTest do
     assert actual == expected
   end
 
-  test "encode" do
+  test "encode data message" do
     data = %DataMessage{type: 20, headers: [<<"sportsbook/football/9935205/stats/score!o638">>], data: [<<"0 - 0">>]}
     actual =  Protocol.encode(data)
     expected = <<"\u{14}sportsbook/football/9935205/stats/score!o638\u{01}0 - 0">>
+    assert actual == expected
+  end
+
+  test "encode connection response" do
+    data = %ConnectionResponse{type: 100, client_id: "C8D4048FA5712A3A-006740E900000004", version: 4}
+    actual = Protocol.encode(data)
+    expected = <<"4\u{02}100\u{02}C8D4048FA5712A3A-006740E900000004">>
     assert actual == expected
   end
 end
