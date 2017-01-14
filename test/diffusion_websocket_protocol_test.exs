@@ -35,4 +35,18 @@ defmodule Diffusion.Websocket.ProtocolTest do
     assert Protocol.decode(bin) == %DataMessage{type: 25, headers: ["1484349590272"], data: [""]}
   end
 
+  # Encodeing
+
+  test "encodes client ping" do
+    expected = <<"\u{19}1484349590272\u{01}">>
+    actual = Protocol.encode(%DataMessage{type: 25, headers: ["1484349590272"], data: [""]})
+    assert actual == expected
+  end
+
+  test "encode" do
+    data = %DataMessage{type: 20, headers: [<<"sportsbook/football/9935205/stats/score!o638">>], data: [<<"0 - 0">>]}
+    actual =  Protocol.encode(data)
+    expected = <<"\u{14}sportsbook/football/9935205/stats/score!o638\u{01}0 - 0">>
+    assert actual == expected
+  end
 end

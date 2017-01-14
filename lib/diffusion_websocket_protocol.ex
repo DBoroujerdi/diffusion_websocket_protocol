@@ -77,14 +77,10 @@ defmodule Diffusion.Websocket.Protocol do
   delimiters.
   """
 
-  @spec encode(DataMessage.t) :: String.t | {:error, atom}
-
-  def encode(%DataMessage{type: type, data: data, headers: []}) do
-    Integer.to_string(type) <>  Enum.join(data, "\u{02}")
-  end
+  @spec encode(DataMessage.t) :: String.t
 
   def encode(%DataMessage{type: type, data: data, headers: headers}) do
-    Integer.to_string(type) <> Enum.join(headers, "\u{02}") <> "\u{01}" <> Enum.join(data, "\u{02}")
+    :binary.encode_unsigned(type) <> Enum.join(headers, "\u{02}") <> "\u{01}" <> Enum.join(data, "\u{02}")
   end
 
 
